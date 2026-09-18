@@ -1,0 +1,4 @@
+-- Runs on `supabase db reset` / `supabase start` against a local database; it is NOT pushed to a hosted project.
+-- There is no demo data: create an account with the app's sign-up screen.
+-- The access-control tests in supabase/tests create their own accounts and group.
+-- Vendors and their reviews come from the vendor_catalog migration, so they exist in hosted projects too.
