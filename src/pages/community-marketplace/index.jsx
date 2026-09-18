@@ -10,6 +10,7 @@ import CategoryNavigation from './components/CategoryNavigation';
 import SortingControls from './components/SortingControls';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import useEscapeKey from '../../hooks/useEscapeKey';
 
 const CommunityMarketplace = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const CommunityMarketplace = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState(null);
+  useEscapeKey(showFilters, () => setShowFilters(false));
   const [favoriteVendors, setFavoriteVendors] = useState(new Set());
   const [filters, setFilters] = useState({
     categories: [],
@@ -29,14 +31,6 @@ const CommunityMarketplace = () => {
     verified: false,
     addedByGroups: false  // New filter for community-added vendors
   });
-
-  // Mock user data
-  const mockUser = {
-    id: 1,
-    name: "Priya Sharma",
-    email: "priya.sharma@email.com",
-    avatar: "https://randomuser.me/api/portraits/women/32.jpg"
-  };
 
   // Mock notifications
   const mockNotifications = [
@@ -381,7 +375,6 @@ const CommunityMarketplace = () => {
     <div className="min-h-screen bg-background">
       {/* Global Header */}
       <GlobalHeader
-        user={mockUser}
         notifications={mockNotifications}
         onNotificationClick={handleNotificationClick}
       />

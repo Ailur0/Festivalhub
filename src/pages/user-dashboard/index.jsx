@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import GlobalHeader from '../../components/ui/GlobalHeader';
+import { getCurrentUser } from '../../utils/auth';
 
 
 
@@ -20,6 +21,7 @@ const UserDashboard = () => {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredGroups, setFilteredGroups] = useState([]);
+  const sessionUser = getCurrentUser();
 
   // Mock user data
   const currentUser = {
@@ -210,8 +212,7 @@ const UserDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Global Header */}
-      <GlobalHeader 
-        user={currentUser}
+      <GlobalHeader
         notifications={notifications}
         onNotificationClick={handleNotificationClick}
       />
@@ -223,7 +224,7 @@ const UserDashboard = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-foreground font-heading mb-2">
-                  Welcome back, {currentUser?.name?.split(' ')?.[0]}! 🎉
+                  Welcome back, {sessionUser?.name}! 🎉
                 </h1>
                 <p className="text-muted-foreground">
                   Manage your festival celebrations and connect with your community

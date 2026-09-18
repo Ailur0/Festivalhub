@@ -3,12 +3,15 @@ import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
+import useEscapeKey from '../../../hooks/useEscapeKey';
 
 const VendorProfileModal = ({ vendor, isOpen, onClose, onToggleFavorite, isFavorite = false }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: '', photos: [] });
+
+  useEscapeKey(isOpen && !!vendor, onClose);
 
   if (!isOpen || !vendor) return null;
 

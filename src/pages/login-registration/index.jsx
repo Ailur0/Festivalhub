@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Icon from '../../components/AppIcon';
+import { signIn } from '../../utils/auth';
 import AuthCard from './components/AuthCard';
 import SocialProof from './components/SocialProof';
 import LanguageSelector from './components/LanguageSelector';
 import FestivalBackground from './components/FestivalBackground';
 
-const LoginRegistration = () => {
+// mode is 'login' (/login-registration) or 'register' (/signup)
+const LoginRegistration = ({ mode = 'login' }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const handleAuthSuccess = (userData) => {
-    // Store user data in localStorage
-    localStorage.setItem('festivalhub_user', JSON.stringify(userData));
-    localStorage.setItem('festivalhub_authenticated', 'true');
-    
+    signIn(userData);
+
     // Show success toast
     setShowSuccessToast(true);
-    
-    // Navigate to dashboard after short delay
+
+    // Return to the page that required sign-in, or the dashboard
     setTimeout(() => {
-      navigate('/user-dashboard');
+      navigate(location?.state?.from?.pathname || '/user-dashboard', { replace: true });
     }, 1500);
   };
 
@@ -63,15 +64,17 @@ const LoginRegistration = () => {
               {/* Welcome Text */}
               <div className="text-center space-y-2">
                 <h2 className="text-2xl font-bold text-foreground font-heading">
-                  Welcome to FestivalHub
+                  {mode === 'login' ? 'Welcome to FestivalHub' : 'Create your FestivalHub account'}
                 </h2>
                 <p className="text-muted-foreground">
-                  Streamline your festival planning and management
+                  {mode === 'login'
+                    ? 'Streamline your festival planning and management'
+                    : 'Plan festivals, share costs and find vendors with your community'}
                 </p>
               </div>
 
-              {/* Authentication Card */}
-              <AuthCard onAuthSuccess={handleAuthSuccess} />
+              {/* Authentication Card: keyed so switching pages starts a fresh form */}
+              <AuthCard key={mode} mode={mode} onAuthSuccess={handleAuthSuccess} />
 
               {/* Social Proof - Mobile/Tablet Only */}
               <div className="lg:hidden">
@@ -96,7 +99,9 @@ const LoginRegistration = () => {
         <div className="fixed top-4 right-4 z-100 animate-slide-down">
           <div className="bg-success text-success-foreground px-6 py-3 rounded-lg festival-shadow-lg flex items-center space-x-3">
             <Icon name="CheckCircle" size={20} />
-            <span className="font-medium">Authentication successful! Redirecting...</span>
+            <span className="font-medium">
+              {mode === 'login' ? 'Signed in! Redirecting...' : 'Account created! Redirecting...'}
+            </span>
           </div>
         </div>
       )}

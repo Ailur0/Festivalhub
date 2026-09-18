@@ -1,18 +1,42 @@
-# React
+# FestivalHub
 
-A modern React-based project utilizing the latest frontend technologies and tools for building responsive web applications.
+Planning community festivals: groups, member contributions, expense tracking and a vendor marketplace.
+
+| Folder | What it is |
+|---|---|
+| `src/` | The original web prototype (this README). Its data is still mock data in the page components. |
+| `mobile/` | The Android app (Expo + React Native), which uses the Supabase backend. See [mobile/README.md](mobile/README.md). |
+| `supabase/` | Database schema, access rules and tests, shared by both. |
+
+## 🗄️ Backend (Supabase)
+
+`supabase/migrations` defines the tables, row-level security and the functions the app calls; the vendor catalogue is also a migration, so every database gets it. There are no demo accounts or groups: sign up in the app.
+
+```bash
+npx supabase start     # local database + API in Docker; prints the URL and keys
+npx supabase db reset  # reapply the schema
+npx supabase test db   # run the access-control tests in supabase/tests
+```
+
+To use a hosted project instead: create one at [supabase.com](https://supabase.com), then `npx supabase link --project-ref <ref>` and `npx supabase db push`.
+
+**Status:** the schema and vendor catalogue are live on a hosted Supabase project, and the mobile app runs against it. The access-control tests create their own accounts and group, but haven't run yet, because Docker Desktop won't start on this machine.
 
 ## 🚀 Features
 
 - **React 18** - React version with improved rendering and concurrent features
 - **Vite** - Lightning-fast build tool and development server
-- **Redux Toolkit** - State management with simplified Redux setup
 - **TailwindCSS** - Utility-first CSS framework with extensive customization
 - **React Router v6** - Declarative routing for React applications
-- **Data Visualization** - Integrated D3.js and Recharts for powerful data visualization
-- **Form Management** - React Hook Form for efficient form handling
-- **Animation** - Framer Motion for smooth UI animations
-- **Testing** - Jest and React Testing Library setup
+- **Lucide icons** - Only the icons registered in `src/components/AppIcon.jsx` are bundled
+
+## 🔑 Sign-up and sign-in
+
+Create an account at `/signup`, then sign in at `/login-registration` with its email (or phone) and password. There is no demo account.
+
+Accounts and sessions are simulated in the browser (`src/utils/auth.js`): they are saved in this browser's local storage (passwords only as a hash), are not shared with the mobile app or Supabase, and are not real authentication.
+
+The dashboard, group, finance and settings pages require sign-in; the marketplace is public.
 
 ## 📋 Prerequisites
 

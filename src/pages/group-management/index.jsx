@@ -436,8 +436,7 @@ const GroupManagement = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Global Header */}
-      <GlobalHeader 
-        user={currentUser}
+      <GlobalHeader
         notifications={notifications}
         onNotificationClick={handleNotificationClick}
       />

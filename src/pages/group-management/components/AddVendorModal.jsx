@@ -3,6 +3,7 @@ import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
 import Icon from '../../../components/AppIcon';
+import useEscapeKey from '../../../hooks/useEscapeKey';
 
 const AddVendorModal = ({ isOpen, onClose, onAddVendor, groupInfo }) => {
   const [formData, setFormData] = useState({
@@ -159,10 +160,12 @@ const AddVendorModal = ({ isOpen, onClose, onAddVendor, groupInfo }) => {
     }
   };
 
+  useEscapeKey(isOpen, handleClose);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-110 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleClose} />
       <div className="relative bg-card border border-border rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto mx-4 festival-shadow-xl">
         {/* Header */}
@@ -187,7 +190,7 @@ const AddVendorModal = ({ isOpen, onClose, onAddVendor, groupInfo }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} noValidate className="p-6 space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-foreground">Basic Information</h3>

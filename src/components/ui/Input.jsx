@@ -28,6 +28,7 @@ const Input = React.forwardRef(({
                 )}
                 ref={ref}
                 id={inputId}
+                required={required}
                 {...props}
             />
         );
@@ -44,6 +45,7 @@ const Input = React.forwardRef(({
                 )}
                 ref={ref}
                 id={inputId}
+                required={required}
                 {...props}
             />
         );
@@ -74,6 +76,7 @@ const Input = React.forwardRef(({
                 )}
                 ref={ref}
                 id={inputId}
+                required={required}
                 {...props}
             />
 

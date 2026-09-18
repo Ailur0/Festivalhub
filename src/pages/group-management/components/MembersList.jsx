@@ -3,10 +3,13 @@ import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
+import useEscapeKey from '../../../hooks/useEscapeKey';
 
 const MembersList = ({ members, userRole, onInviteMember, onRemoveMember, onUpdateRole }) => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
+
+  useEscapeKey(showInviteModal, () => setShowInviteModal(false));
 
   const roleOptions = [
     { value: 'fund_collection', label: 'Fund Collection', color: 'bg-green-100 text-green-800' },
@@ -161,7 +164,7 @@ const MembersList = ({ members, userRole, onInviteMember, onRemoveMember, onUpda
       </div>
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-110 p-4">
           <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md festival-shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-foreground font-heading">

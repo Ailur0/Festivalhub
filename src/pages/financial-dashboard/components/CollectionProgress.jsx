@@ -90,9 +90,9 @@ const CollectionProgress = ({ totalBudget, collectedAmount, memberCount, paidMem
         <h4 className="text-sm font-medium text-foreground mb-3">Milestones</h4>
         <div className="flex justify-between items-center">
           {milestones?.map((milestone, index) => (
-            <div key={milestone?.percentage} className="flex flex-col items-center">
+            <div key={milestone?.percentage} className="relative flex flex-1 flex-col items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 ${
+                className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 ${
                   milestone?.reached
                     ? 'bg-success text-success-foreground'
                     : 'bg-muted text-muted-foreground'
@@ -110,7 +110,7 @@ const CollectionProgress = ({ totalBudget, collectedAmount, memberCount, paidMem
                 {milestone?.label}
               </span>
               {index < milestones?.length - 1 && (
-                <div className="absolute w-full h-0.5 bg-muted top-4 left-4 -z-10" />
+                <div className="absolute w-full h-0.5 bg-muted top-4 left-1/2" />
               )}
             </div>
           ))}

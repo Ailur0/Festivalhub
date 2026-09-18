@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
+import useEscapeKey from '../../../hooks/useEscapeKey';
 
 const AddExpenseModal = ({ isOpen, onClose, onAddExpense, selectedCategory, members }) => {
   const [formData, setFormData] = useState({
@@ -68,10 +69,19 @@ const AddExpenseModal = ({ isOpen, onClose, onAddExpense, selectedCategory, memb
     }));
   };
 
+  // Pre-select the category when opened from a category's "Add Expense" button
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(prev => ({ ...prev, category: selectedCategory || '' }));
+    }
+  }, [isOpen, selectedCategory]);
+
+  useEscapeKey(isOpen, handleClose);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-110 p-4">
       <div className="bg-card border border-border rounded-lg w-full max-w-md festival-shadow-xl">
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center space-x-3">

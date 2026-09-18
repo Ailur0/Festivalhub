@@ -102,7 +102,7 @@ const SearchBar = ({
             onChange={handleInputChange}
             onFocus={handleInputFocus}
             placeholder="Search vendors, services, or categories..."
-            className="flex-1 px-4 py-3 bg-transparent text-foreground placeholder-muted-foreground focus:outline-none"
+            className="flex-1 min-w-0 px-4 py-3 bg-transparent text-foreground placeholder-muted-foreground focus:outline-none"
           />
           
           {searchQuery && (

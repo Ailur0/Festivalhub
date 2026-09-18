@@ -28,22 +28,7 @@ const FinancialDashboard = () => {
     role: "admin"
   };
 
-  const currentGroup = {
-    id: 1,
-    name: "Diwali Celebration 2024",
-    type: "Festival Committee",
-    memberCount: 12,
-    totalBudget: 5000,
-    collectedAmount: 3200,
-    totalExpenses: 1800
-  };
-
-  const [budgetData, setBudgetData] = useState({
-    totalBudget: currentGroup?.totalBudget,
-    collectedAmount: currentGroup?.collectedAmount,
-    totalExpenses: currentGroup?.totalExpenses,
-    remainingBalance: currentGroup?.collectedAmount - currentGroup?.totalExpenses
-  });
+  const [totalBudget, setTotalBudget] = useState(2500);
 
   const members = [
     {
@@ -107,6 +92,13 @@ const FinancialDashboard = () => {
       email: "meera.joshi@email.com"
     }
   ];
+
+  const currentGroup = {
+    id: 1,
+    name: "Diwali Celebration 2024",
+    type: "Festival Committee",
+    memberCount: members?.length
+  };
 
   const initialExpenses = [
     {
@@ -196,11 +188,26 @@ const FinancialDashboard = () => {
     setNotifications(mockNotifications);
   }, []);
 
+  // Totals are derived from the listed members and expenses so every card agrees
+  const perMemberShare = members?.length > 0 ? totalBudget / members?.length : 0;
+  const memberContributions = members?.map(member => ({
+    ...member,
+    totalAmount: perMemberShare,
+    status: member?.paidAmount >= perMemberShare
+      ? 'paid'
+      : member?.status === 'paid' ? 'pending' : member?.status
+  }));
+  const collectedAmount = members?.reduce((sum, member) => sum + member?.paidAmount, 0);
+  const totalExpenses = expenses?.reduce((sum, expense) => sum + expense?.amount, 0);
+  const budgetData = {
+    totalBudget,
+    collectedAmount,
+    totalExpenses,
+    remainingBalance: collectedAmount - totalExpenses
+  };
+
   const handleBudgetUpdate = (newBudget) => {
-    setBudgetData(prev => ({
-      ...prev,
-      totalBudget: newBudget
-    }));
+    setTotalBudget(newBudget);
   };
 
   const handleContactMember = (member, method) => {
@@ -223,11 +230,6 @@ const FinancialDashboard = () => {
 
   const handleExpenseSubmit = (newExpense) => {
     setExpenses(prev => [...prev, newExpense]);
-    setBudgetData(prev => ({
-      ...prev,
-      totalExpenses: prev?.totalExpenses + newExpense?.amount,
-      remainingBalance: prev?.collectedAmount - (prev?.totalExpenses + newExpense?.amount)
-    }));
   };
 
   const handleEditExpense = (expense) => {
@@ -235,15 +237,7 @@ const FinancialDashboard = () => {
   };
 
   const handleDeleteExpense = (expenseId) => {
-    const expenseToDelete = expenses?.find(e => e?.id === expenseId);
-    if (expenseToDelete) {
-      setExpenses(prev => prev?.filter(e => e?.id !== expenseId));
-      setBudgetData(prev => ({
-        ...prev,
-        totalExpenses: prev?.totalExpenses - expenseToDelete?.amount,
-        remainingBalance: prev?.collectedAmount - (prev?.totalExpenses - expenseToDelete?.amount)
-      }));
-    }
+    setExpenses(prev => prev?.filter(e => e?.id !== expenseId));
   };
 
   const handleExportReport = (reportData) => {
@@ -261,7 +255,7 @@ const FinancialDashboard = () => {
     return acc;
   }, {});
 
-  const paidMembers = members?.filter(member => member?.status === 'paid')?.length;
+  const paidMembers = memberContributions?.filter(member => member?.status === 'paid')?.length;
   const overviewCards = [
     {
       title: 'Total Budget',
@@ -299,8 +293,7 @@ const FinancialDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <GlobalHeader 
-        user={currentUser} 
+      <GlobalHeader
         notifications={notifications}
         onNotificationClick={handleNotificationClick}
       />
@@ -402,7 +395,7 @@ const FinancialDashboard = () => {
                   Member Contributions
                 </h2>
                 <div className="space-y-4">
-                  {members?.map(member => (
+                  {memberContributions?.map(member => (
                     <MemberContributionCard
                       key={member?.id}
                       member={member}
@@ -444,7 +437,7 @@ const FinancialDashboard = () => {
         financialData={{
           group: currentGroup,
           budget: budgetData,
-          members,
+          members: memberContributions,
           expenses,
           categories: expensesByCategory
         }}

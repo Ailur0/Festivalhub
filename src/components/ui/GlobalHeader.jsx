@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
+import { getCurrentUser, signOut } from '../../utils/auth';
 
-const GlobalHeader = ({ user, notifications = [], onNotificationClick }) => {
+const GlobalHeader = ({ notifications = [], onNotificationClick }) => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const user = getCurrentUser();
 
   const navigationItems = [
     { label: 'Dashboard', path: '/user-dashboard', icon: 'LayoutDashboard' },
@@ -31,6 +34,13 @@ const GlobalHeader = ({ user, notifications = [], onNotificationClick }) => {
 
   const handleNotificationToggle = () => {
     setIsNotificationOpen(!isNotificationOpen);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    setIsAccountMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    navigate('/login-registration');
   };
 
   const unreadCount = notifications?.filter(n => !n?.read)?.length;
@@ -142,17 +152,54 @@ const GlobalHeader = ({ user, notifications = [], onNotificationClick }) => {
               </button>
             </div>
 
-            {/* User Avatar */}
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-primary-foreground">
-                  {user?.name?.charAt(0) || 'U'}
-                </span>
+            {/* Account Menu */}
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                  aria-label="Account menu"
+                  aria-expanded={isAccountMenuOpen}
+                  className="flex items-center space-x-2 p-1 rounded-md hover:bg-muted transition-micro"
+                >
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-foreground">
+                      {user?.name?.charAt(0) || 'U'}
+                    </span>
+                  </div>
+                  <span className="hidden lg:block text-sm font-medium text-foreground">
+                    {user?.name || 'User'}
+                  </span>
+                </button>
+
+                {isAccountMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-popover border border-border rounded-lg festival-shadow-lg z-50 animate-slide-down">
+                    <div className="p-3 border-b border-border">
+                      <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                    </div>
+                    <div className="p-1">
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center space-x-2 w-full px-3 py-2 rounded-md text-sm text-foreground hover:bg-muted transition-micro"
+                      >
+                        <Icon name="LogOut" size={16} />
+                        <span>Sign out</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <span className="hidden lg:block text-sm font-medium text-foreground">
-                {user?.name || 'User'}
-              </span>
-            </div>
+            ) : (
+              <Button
+                variant="default"
+                size="sm"
+                iconName="LogIn"
+                iconPosition="left"
+                onClick={() => navigate('/login-registration', { state: { from: location } })}
+              >
+                Sign in
+              </Button>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -197,6 +244,15 @@ const GlobalHeader = ({ user, notifications = [], onNotificationClick }) => {
                     <span>{item?.label}</span>
                   </button>
                 ))}
+                {user && (
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-micro text-muted-foreground hover:text-foreground hover:bg-muted"
+                  >
+                    <Icon name="LogOut" size={16} />
+                    <span>Sign out</span>
+                  </button>
+                )}
               </div>
             </nav>
           </div>
@@ -209,11 +265,14 @@ const GlobalHeader = ({ user, notifications = [], onNotificationClick }) => {
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
-      {/* Overlay for notifications */}
-      {isNotificationOpen && (
+      {/* Overlay for notifications and account menu */}
+      {(isNotificationOpen || isAccountMenuOpen) && (
         <div
           className="fixed inset-0 z-40"
-          onClick={() => setIsNotificationOpen(false)}
+          onClick={() => {
+            setIsNotificationOpen(false);
+            setIsAccountMenuOpen(false);
+          }}
         />
       )}
     </>

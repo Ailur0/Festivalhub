@@ -201,8 +201,7 @@ const GroupSettingsPrivacy = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <GlobalHeader 
-        user={user} 
+      <GlobalHeader
         notifications={notifications}
         onNotificationClick={handleNotificationClick}
       />
