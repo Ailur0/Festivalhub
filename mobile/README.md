@@ -20,7 +20,7 @@ Totals are calculated from the members and expenses the server returns (`src/lib
 | Area | Where |
 |---|---|
 | Supabase client | `src/lib/supabase.ts` (rewrites a local URL to `10.0.2.2` for the Android emulator) |
-| Sign-in | `src/state/session.tsx` – password and emailed 6-digit code |
+| Sign-in | `src/state/session.tsx` – password and emailed 6-digit code (the code option is hidden by `EMAIL_CODE_SIGN_IN` in `src/app/sign-in.tsx` until the hosted project uses custom SMTP) |
 | Database calls | `src/lib/api.ts` |
 | Caching and refresh | `src/state/queries.ts` (React Query); pull to refresh on tab screens |
 | Error messages | `src/lib/errors.ts` turns Postgres/Auth errors into plain sentences |

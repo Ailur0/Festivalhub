@@ -15,6 +15,10 @@ import { isSupabaseConfigured } from '@/lib/supabase';
 import { MIN_PASSWORD_LENGTH, isValidEmail } from '@/lib/validation';
 import { useSession } from '@/state/session';
 
+// Off until the hosted project sends email through custom SMTP: on the free plan with Supabase's
+// built-in sender the sign-in email template can't be changed, so it sends a link instead of the code.
+const EMAIL_CODE_SIGN_IN = false;
+
 type Mode = 'sign-in' | 'register';
 type Errors = Partial<Record<'email' | 'password' | 'code' | 'name' | 'confirm' | 'terms' | 'general', string>>;
 
@@ -211,17 +215,19 @@ export default function SignInScreen() {
               </>
             )}
 
-            <Button
-              variant="ghost"
-              label={useCode ? 'Use password instead' : 'Sign in with an emailed code'}
-              onPress={() => {
-                setUseCode((value) => !value);
-                setCodeSent(false);
-                setCode('');
-                setErrors({});
-                setNotice(undefined);
-              }}
-            />
+            {EMAIL_CODE_SIGN_IN && (
+              <Button
+                variant="ghost"
+                label={useCode ? 'Use password instead' : 'Sign in with an emailed code'}
+                onPress={() => {
+                  setUseCode((value) => !value);
+                  setCodeSent(false);
+                  setCode('');
+                  setErrors({});
+                  setNotice(undefined);
+                }}
+              />
+            )}
           </>
         ) : (
           <>
